@@ -1,0 +1,63 @@
+
+After vsftpd package installation
+go to /etc/vsftps/vsftps.conf
+
+# selected configuration for vsftpd
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+xferlog_std_format=YES
+dual_log_enable=YES
+log_ftp_protocol=YES
+xferlog_file=/var/log/xferlog
+idle_session_timeout=600
+data_connection_timeout=1800
+chroot_local_user=YES
+listen=YES
+listen_port=21
+pam_service_name=vsftpd
+#userlist_enable=YES
+#userlist_deny=NO
+#userlist_file=/etc/vsftpd.userlist
+tcp_wrappers=YES
+use_localtime=YES
+local_root=/home/ftp-data/
+max_per_ip=100
+max_clients=200
+log_ftp_protocol=YES
+pasv_enable=YES
+#pasv_address=101.53.142.42
+#port_enable=NO
+#pasv_min_port=12000
+#pasv_max_port=12050
+#pasv_min_port=32768
+#pasv_max_port=65535
+#dirlist_enable=YES
+#pasv_addr_resolve=YES
+#pasv_promiscuous=YES
+#port_promiscuous=YES
+
+:wq!
+
+systemctl restart vsftpd
+
+Now
+
+If user created in /sbin/nologin
+then, vim /etc/pam.d/vsftpd
+#%PAM-1.0
+session    optional     pam_keyinit.so    force revoke
+auth       required     pam_listfile.so item=user sense=deny file=/etc/vsftpd/ftpusers onerr=succeed
+#auth       required    pam_shells.so       <--this is commented because this pam_shell.so allow user enter via login shell, but create user in nologin shell          
+auth       include      password-auth
+account    include      password-auth
+session    required     pam_loginuid.so
+session    include      password-auth
+:wq!
+
+systemctl restart vsftpd
+

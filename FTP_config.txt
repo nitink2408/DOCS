@@ -1,0 +1,50 @@
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+#xferlog_enable=YES
+connect_from_port_20=YES
+##xferlog_std_format=YES
+dual_log_enable=YES
+log_ftp_protocol=YES
+xferlog_file=/var/log/xferlog
+idle_session_timeout=1800
+data_connection_timeout=1800
+chroot_local_user=YES
+listen=YES
+listen_port=2121
+pam_service_name=vsftpd-1
+userlist_enable=YES
+tcp_wrappers=YES
+pasv_enable=YES
+use_localtime=YES
+local_root=/home/assetmgmnt/
+max_per_ip=20
+max_clients=100
+log_ftp_protocol=YES
+pasv_address=103.35.165.83
+##port_enable=YES
+##pasv_min_port=12000
+##pasv_max_port=12050
+pasv_min_port=32768
+pasv_max_port=65535
+#
+
+
+To run multiple ftp on one server
+
+vim /etc/vsftpd/vsftpd-1.conf 
+cp /usr/lib/systemd/system/vsftpd.service /usr/lib/systemd/system/vsftpd-1.service
+vim /usr/lib/systemd/system/vsftpd-1.service
+change from ExecStart=/usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+           to
+ExecStart=/usr/sbin/vsftpd /etc/vsftpd/vsftpd-1.conf
+:wq!
+
+systemctl start vsftpd-1.service
+systemctl status vsftpd-1.service
+netstat -tunlp |grep vsftpd
+
+
+
